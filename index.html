@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GitanX - Keys</title>
     
-    
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     
     <style>
@@ -169,6 +168,7 @@
             transform: translateY(0);
         }
 
+        /* ── NAV SCROLL-HIDE ── */
         nav {
             background: rgba(0, 0, 0, 0.95);
             padding: 0;
@@ -179,6 +179,10 @@
             z-index: 1000;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(20px);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        nav.nav-hidden {
+            transform: translateY(-100%);
         }
 
         .nav-container {
@@ -201,6 +205,7 @@
             letter-spacing: -0.5px;
             z-index: 1001;
             position: relative;
+            text-decoration: none;
         }
 
         .nav-links {
@@ -228,6 +233,24 @@
         .nav-links a.active {
             color: #ffffff;
             background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Bouton Discord dans le nav */
+        .nav-discord {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #5865F2;
+            color: #ffffff !important;
+            padding: 9px 18px !important;
+            border-radius: 10px !important;
+            font-weight: 600 !important;
+            font-size: 0.9em !important;
+            transition: all 0.2s ease !important;
+        }
+        .nav-discord:hover {
+            background: #6d7afc !important;
+            transform: translateY(-2px) !important;
         }
 
         .menu-toggle {
@@ -775,7 +798,6 @@
             <p class="adblock-message">
                 Please disable your AdBlock to continue accessing GitanX Keys.
             </p>
-            
             <div class="adblock-steps">
                 <h3>📋 How to disable AdBlock:</h3>
                 <ol>
@@ -784,16 +806,20 @@
                     <li>Refresh the page</li>
                 </ol>
             </div>
-
             <button class="adblock-refresh-btn" onclick="location.reload()">
                 🔄 I've Disabled AdBlock - Refresh
             </button>
         </div>
     </div>
 
-    <nav>
+    <!-- NAV -->
+    <nav id="navbar">
         <div class="nav-container">
-            <div class="logo">GitanX</div>
+            <a href="#" class="logo">GitanX</a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#" class="active">Keys</a></li>
+                <li><a href="#" class="nav-discord">💬 Discord</a></li>
+            </ul>
             <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
                 <span></span>
                 <span></span>
@@ -836,7 +862,7 @@
                         </div>
                     </div>
 
-                    <a href="https://discord.gg/nqVTXUeDHk" class="lifetime-cta" target="_blank">
+                    <a href="https://www.roblox.com/fr/game-pass/189882548/feu" class="lifetime-cta" target="_blank">
                         <span>💎 Get lifetime Key 💎</span>
                     </a>
 
@@ -868,25 +894,20 @@
     </div>
 
     <script>
-        // Improved AdBlock Detection
+        // AdBlock Detection (original)
         function checkAdBlock() {
             const adBlockOverlay = document.getElementById('adblockOverlay');
-            
-            // Method 1: Check if Google Ads script loaded
             setTimeout(function() {
                 if (typeof window.adsbygoogle === 'undefined') {
                     adBlockOverlay.classList.add('show');
                     document.body.style.overflow = 'hidden';
                 }
             }, 1000);
-
-            // Method 2: Create fake ad element
             const testAd = document.createElement('div');
             testAd.innerHTML = '&nbsp;';
             testAd.className = 'adsbox ad-placement ad-placeholder adbadge BannerAd';
             testAd.style.cssText = 'width: 1px !important; height: 1px !important; position: absolute !important; left: -10000px !important; top: -1000px !important;';
             document.body.appendChild(testAd);
-
             setTimeout(function() {
                 if (testAd.offsetHeight === 0 || testAd.clientHeight === 0) {
                     adBlockOverlay.classList.add('show');
@@ -894,25 +915,33 @@
                 }
                 testAd.remove();
             }, 100);
-
-            // Method 3: Try to fetch from ad server
             fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', {
-                method: 'HEAD',
-                mode: 'no-cors'
+                method: 'HEAD', mode: 'no-cors'
             }).catch(function() {
                 adBlockOverlay.classList.add('show');
                 document.body.style.overflow = 'hidden';
             });
         }
-
-        // Run detection when page loads
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', checkAdBlock);
         } else {
             checkAdBlock();
         }
 
-        // Menu functionality
+        // Nav scroll-hide
+        const navbar = document.getElementById('navbar');
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const current = window.scrollY;
+            if (current > lastScroll && current > 80) {
+                navbar.classList.add('nav-hidden');
+            } else {
+                navbar.classList.remove('nav-hidden');
+            }
+            lastScroll = current;
+        });
+
+        // Mobile menu
         const menuToggle = document.getElementById('menuToggle');
         const navLinks = document.getElementById('navLinks');
         const navOverlay = document.getElementById('navOverlay');
@@ -922,52 +951,24 @@
             menuToggle.classList.toggle('active');
             navLinks.classList.toggle('active');
             navOverlay.classList.toggle('active');
-            
-            if (navLinks.classList.contains('active')) {
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.style.overflow = '';
-            }
+            document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
         }
-
         function closeMenu() {
             menuToggle.classList.remove('active');
             navLinks.classList.remove('active');
             navOverlay.classList.remove('active');
             document.body.style.overflow = '';
         }
+        if (menuToggle) menuToggle.addEventListener('click', toggleMenu);
+        if (navOverlay) navOverlay.addEventListener('click', closeMenu);
+        document.querySelectorAll('.nav-links a').forEach(link => link.addEventListener('click', () => setTimeout(closeMenu, 150)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+        if (navLinks) navLinks.addEventListener('click', (e) => e.stopPropagation());
 
-        if (menuToggle) {
-            menuToggle.addEventListener('click', toggleMenu);
-        }
-        
-        if (navOverlay) {
-            navOverlay.addEventListener('click', closeMenu);
-        }
-
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                setTimeout(closeMenu, 150);
-            });
-        });
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && navLinks && navLinks.classList.contains('active')) {
-                closeMenu();
-            }
-        });
-
-        if (navLinks) {
-            navLinks.addEventListener('click', (e) => {
-                e.stopPropagation();
-            });
-        }
-
-        // Star animation
+        // Stars (original)
         function createStars() {
             const starsContainer = document.getElementById('stars');
             if (!starsContainer) return;
-            
             for (let i = 0; i < 300; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
@@ -981,11 +982,9 @@
                 starsContainer.appendChild(star);
             }
         }
-
         createStars();
     </script>
     
-    <!-- Additional AdBlock Detection -->
     <script data-cfasync="false" src="//d33f51dyacx7bd.cloudfront.net/?aydfd=1239876"></script>
 </body>
 </html>
