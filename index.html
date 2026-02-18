@@ -836,8 +836,7 @@
                         </div>
                     </div>
 
-                    <!-- MODIFIÉ: lien vers Roblox gamepass -->
-                    <a href="https://www.roblox.com/fr/game-pass/189882548/feu" class="lifetime-cta" target="_blank">
+                    <a href="key.html" class="lifetime-cta">
                         <span>💎 Get lifetime Key 💎</span>
                     </a>
 
@@ -869,100 +868,51 @@
     </div>
 
     <script>
-        // ============================================================
-        // ADBLOCK DETECTION - Améliorée pour Opera, Brave, Firefox, etc.
-        // ============================================================
-        var adBlockDetected = false;
-
-        function showAdBlockModal() {
-            if (adBlockDetected) return;
-            adBlockDetected = true;
-            var overlay = document.getElementById('adblockOverlay');
-            overlay.classList.add('show');
-            document.body.style.overflow = 'hidden';
-        }
-
+        // Improved AdBlock Detection
         function checkAdBlock() {
-
-            // ---- Méthode 1 : Faux élément publicitaire ----
-            var baitEl = document.createElement('div');
-            baitEl.setAttribute('class', 'pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad text_ads text-ads ad-text adSense adBlock adContent adBanner adsbox ad-placement');
-            baitEl.setAttribute('id', 'adBannerTest');
-            baitEl.style.cssText = 'width:1px!important;height:1px!important;position:absolute!important;left:-9999px!important;top:-9999px!important;opacity:0!important;pointer-events:none!important;';
-            baitEl.innerHTML = '&nbsp;';
-            document.body.appendChild(baitEl);
-
-            setTimeout(function () {
-                var el = document.getElementById('adBannerTest');
-                if (!el || el.offsetParent === null || el.offsetHeight === 0 || el.offsetWidth === 0 || el.clientHeight === 0 || el.clientWidth === 0 || window.getComputedStyle(el).display === 'none' || window.getComputedStyle(el).visibility === 'hidden') {
-                    showAdBlockModal();
+            const adBlockOverlay = document.getElementById('adblockOverlay');
+            
+            // Method 1: Check if Google Ads script loaded
+            setTimeout(function() {
+                if (typeof window.adsbygoogle === 'undefined') {
+                    adBlockOverlay.classList.add('show');
+                    document.body.style.overflow = 'hidden';
                 }
-                if (el) el.remove();
-            }, 200);
+            }, 1000);
 
-            // ---- Méthode 2 : Script Google Ads ----
-            setTimeout(function () {
-                if (typeof window.adsbygoogle === 'undefined' || (Array.isArray(window.adsbygoogle) && window.adsbygoogle.loaded === undefined)) {
-                    showAdBlockModal();
+            // Method 2: Create fake ad element
+            const testAd = document.createElement('div');
+            testAd.innerHTML = '&nbsp;';
+            testAd.className = 'adsbox ad-placement ad-placeholder adbadge BannerAd';
+            testAd.style.cssText = 'width: 1px !important; height: 1px !important; position: absolute !important; left: -10000px !important; top: -1000px !important;';
+            document.body.appendChild(testAd);
+
+            setTimeout(function() {
+                if (testAd.offsetHeight === 0 || testAd.clientHeight === 0) {
+                    adBlockOverlay.classList.add('show');
+                    document.body.style.overflow = 'hidden';
                 }
-            }, 1500);
+                testAd.remove();
+            }, 100);
 
-            // ---- Méthode 3 : Fetch vers serveur publicitaire (détecte Opera GX built-in blocker, Brave shields, etc.) ----
-            var testUrls = [
-                'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js',
-                'https://static.doubleclick.net/instream/ad_status.js',
-                'https://ads.pubmatic.com/AdServer/js/pwt/pwt.js'
-            ];
-
-            testUrls.forEach(function (url) {
-                var img = new Image();
-                img.onload = function () {}; // pas bloqué
-                img.onerror = function () {
-                    showAdBlockModal();
-                };
-                img.src = url + '?cb=' + Math.random();
+            // Method 3: Try to fetch from ad server
+            fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', {
+                method: 'HEAD',
+                mode: 'no-cors'
+            }).catch(function() {
+                adBlockOverlay.classList.add('show');
+                document.body.style.overflow = 'hidden';
             });
-
-            // ---- Méthode 4 : XMLHttpRequest (contourne certains cas où fetch est intercepté) ----
-            try {
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', true);
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4 && xhr.status === 0) {
-                        showAdBlockModal();
-                    }
-                };
-                xhr.onerror = function () {
-                    showAdBlockModal();
-                };
-                xhr.send();
-            } catch (e) {
-                showAdBlockModal();
-            }
-
-            // ---- Méthode 5 : Vérifier si un élément .adsbox existe et est caché (uBlock, AdGuard) ----
-            var adsbox = document.createElement('div');
-            adsbox.className = 'adsbox';
-            adsbox.style.cssText = 'position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;';
-            document.body.appendChild(adsbox);
-            setTimeout(function () {
-                if (adsbox.offsetHeight === 0) {
-                    showAdBlockModal();
-                }
-                adsbox.remove();
-            }, 300);
         }
 
-        // Lancer la détection au chargement
+        // Run detection when page loads
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', checkAdBlock);
         } else {
             checkAdBlock();
         }
 
-        // ============================================================
-        // MENU
-        // ============================================================
+        // Menu functionality
         const menuToggle = document.getElementById('menuToggle');
         const navLinks = document.getElementById('navLinks');
         const navOverlay = document.getElementById('navOverlay');
@@ -970,9 +920,10 @@
         function toggleMenu(e) {
             if (e) e.stopPropagation();
             menuToggle.classList.toggle('active');
-            if (navLinks) navLinks.classList.toggle('active');
-            if (navOverlay) navOverlay.classList.toggle('active');
-            if (navLinks && navLinks.classList.contains('active')) {
+            navLinks.classList.toggle('active');
+            navOverlay.classList.toggle('active');
+            
+            if (navLinks.classList.contains('active')) {
                 document.body.style.overflow = 'hidden';
             } else {
                 document.body.style.overflow = '';
@@ -981,30 +932,42 @@
 
         function closeMenu() {
             menuToggle.classList.remove('active');
-            if (navLinks) navLinks.classList.remove('active');
-            if (navOverlay) navOverlay.classList.remove('active');
+            navLinks.classList.remove('active');
+            navOverlay.classList.remove('active');
             document.body.style.overflow = '';
         }
 
-        if (menuToggle) menuToggle.addEventListener('click', toggleMenu);
-        if (navOverlay) navOverlay.addEventListener('click', closeMenu);
+        if (menuToggle) {
+            menuToggle.addEventListener('click', toggleMenu);
+        }
+        
+        if (navOverlay) {
+            navOverlay.addEventListener('click', closeMenu);
+        }
 
         document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => setTimeout(closeMenu, 150));
+            link.addEventListener('click', () => {
+                setTimeout(closeMenu, 150);
+            });
         });
 
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && navLinks && navLinks.classList.contains('active')) closeMenu();
+            if (e.key === 'Escape' && navLinks && navLinks.classList.contains('active')) {
+                closeMenu();
+            }
         });
 
-        if (navLinks) navLinks.addEventListener('click', (e) => e.stopPropagation());
+        if (navLinks) {
+            navLinks.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        }
 
-        // ============================================================
-        // STARS
-        // ============================================================
+        // Star animation
         function createStars() {
             const starsContainer = document.getElementById('stars');
             if (!starsContainer) return;
+            
             for (let i = 0; i < 300; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
