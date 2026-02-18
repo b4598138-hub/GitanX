@@ -235,6 +235,18 @@
             background: rgba(255, 255, 255, 0.1);
         }
 
+        /* Status dans le nav */
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #4CAF50 !important;
+            font-weight: 600 !important;
+            font-size: 0.9em !important;
+            cursor: default !important;
+            pointer-events: none;
+        }
+
         /* Bouton Discord dans le nav */
         .nav-discord {
             display: flex;
@@ -818,6 +830,7 @@
             <a href="#" class="logo">GitanX</a>
             <ul class="nav-links" id="navLinks">
                 <li><a href="#" class="active">Keys</a></li>
+                <li><a href="#" class="nav-status">🟢 Status : Safe</a></li>
                 <li><a href="https://discord.gg/nqVTXUeDHk" class="nav-discord" target="_blank">💬 Discord</a></li>
             </ul>
             <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
